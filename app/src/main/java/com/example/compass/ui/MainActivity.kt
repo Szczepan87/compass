@@ -15,6 +15,8 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import com.example.compass.R
 import com.example.compass.databinding.ActivityMainBinding
+import com.example.compass.util.to360Degrees
+import com.example.compass.util.toPositiveDegrees
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
 
@@ -109,16 +111,4 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             longitude = longDest
         }).toPositiveDegrees()
     }
-}
-
-private fun Float.toPositiveDegrees(): Int {
-    return if (this < 0.0) {
-        this.plus(360).toInt()
-    } else {
-        this.toInt()
-    }
-}
-
-private fun Number.to360Degrees(): Int {
-    return Math.toDegrees(this.toDouble()).plus(360).rem(360).toInt()
 }

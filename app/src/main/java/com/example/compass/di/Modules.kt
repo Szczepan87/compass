@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.hardware.SensorManager
 import android.location.LocationManager
+import com.example.compass.CompassSensorProvider
+import com.example.compass.LocationProvider
 import com.example.compass.R
 import com.example.compass.vm.CompassActivityViewModel
 import org.koin.android.ext.koin.androidContext
@@ -11,8 +13,8 @@ import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val sensorsModule = module {
-    single { provideSensors(androidContext()) }
-    single { provideGPS(androidContext()) }
+    single { CompassSensorProvider(androidContext()) }
+    single { LocationProvider(androidContext()) }
 }
 
 val sharedPrefsModule = module {
@@ -23,14 +25,6 @@ val viewModelModule = module {
     viewModel {
         CompassActivityViewModel(get(), get(), get())
     }
-}
-
-private fun provideSensors(context: Context): SensorManager {
-    return context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-}
-
-private fun provideGPS(context: Context): LocationManager {
-    return context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 }
 
 private fun provideSharedPrefs(context: Context): SharedPreferences {
