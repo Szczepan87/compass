@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.compass.CompassSensorProvider
 import com.example.compass.LocationProvider
+import com.example.compass.util.DEFAULT_LOCATION
 
 class CompassActivityViewModel(
     private val compassSensorProvider: CompassSensorProvider,
@@ -15,7 +16,13 @@ class CompassActivityViewModel(
 ) : ViewModel() {
 
     init {
-        locationProvider.currentLocation.observeForever { _currentLocation.postValue(it) }
+        locationProvider.currentLocation.observeForever {
+            _currentLocation.postValue(it)
+            _currentAzimuth.postValue(
+                it.bearingTo(destinationLocation.value ?: DEFAULT_LOCATION).toInt()
+            )
+        }
+        compassSensorProvider.currentHeading.observeForever { _currentHeading.postValue(it) }
     }
 
     private val _currentLocation = MutableLiveData<Location>()
@@ -34,7 +41,7 @@ class CompassActivityViewModel(
     val currentAzimuth: LiveData<Int>
         get() = _currentAzimuth
 
-    fun updateCurrentLocation(location: Location) {
+    fun updateCurrentLocation() {
         if (locationProvider.hasLocationChanged()) locationProvider.updateCurrentLocation()
     }
 

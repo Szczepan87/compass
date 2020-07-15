@@ -2,8 +2,6 @@ package com.example.compass.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.hardware.SensorManager
-import android.location.LocationManager
 import com.example.compass.CompassSensorProvider
 import com.example.compass.LocationProvider
 import com.example.compass.R
