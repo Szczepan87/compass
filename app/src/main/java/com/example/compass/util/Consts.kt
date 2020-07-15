@@ -8,3 +8,5 @@ val DEFAULT_LOCATION = Location(LocationManager.GPS_PROVIDER).apply {
     longitude = 0.0
     latitude = 0.0
 }
+
+const val ALPHA = 0.15f

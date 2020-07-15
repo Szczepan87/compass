@@ -8,13 +8,14 @@ import android.hardware.SensorManager
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.compass.util.ALPHA
 import com.example.compass.util.to360Degrees
 
-class CompassSensorProvider(context: Context): SensorEventListener {
+class CompassSensorProvider(context: Context) : SensorEventListener {
     private val appContext = context.applicationContext
     private val sensorManager = appContext.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    private lateinit var gravityArray: FloatArray
-    private lateinit var magneticArray: FloatArray
+    private var gravityArray: FloatArray = FloatArray(3)
+    private var magneticArray: FloatArray = FloatArray(3)
     private val _currentHeading = MutableLiveData<Int>()
     val currentHeading: LiveData<Int>
         get() = _currentHeading
@@ -33,25 +34,35 @@ class CompassSensorProvider(context: Context): SensorEventListener {
         )
     }
 
+    private fun lowPass(input: FloatArray, output: FloatArray?): FloatArray {
+        if (output == null) return input
+
+        for (i in 0 until input.size) {
+            output[i] = output[i] + ALPHA * (input[i].minus(output[i]))
+        }
+
+        return output
+    }
+
     override fun onSensorChanged(event: SensorEvent) {
         if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
-            gravityArray = event.values
+            gravityArray = lowPass(event.values.clone(), gravityArray)
         }
 
         if (event.sensor.type == Sensor.TYPE_MAGNETIC_FIELD) {
-            magneticArray = event.values
+            magneticArray = lowPass(event.values.clone(), magneticArray)
         }
 
-        if (this::magneticArray.isInitialized && this::gravityArray.isInitialized) {
-            val R = FloatArray(9)
-            val I = FloatArray(9)
-            val success = SensorManager.getRotationMatrix(R, I, gravityArray, magneticArray)
-            if (success) {
-                val orientation = FloatArray(3)
-                SensorManager.getOrientation(R, orientation)
-                _currentHeading.postValue(orientation[0].to360Degrees())
-            }
+
+        val R = FloatArray(9)
+        val I = FloatArray(9)
+        val success = SensorManager.getRotationMatrix(R, I, gravityArray, magneticArray)
+        if (success) {
+            val orientation = FloatArray(3)
+            SensorManager.getOrientation(R, orientation)
+            _currentHeading.postValue(orientation[0].to360Degrees())
         }
+
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
