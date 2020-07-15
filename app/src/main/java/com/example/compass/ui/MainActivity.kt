@@ -38,6 +38,12 @@ class MainActivity : AppCompatActivity() {
         compassActivityViewModel.updateCurrentLocation()
         compassActivityViewModel.currentHeading.observe(this, Observer { binding.heading = it })
         compassActivityViewModel.currentAzimuth.observe(this, Observer { binding.azimuth = it })
+        compassActivityViewModel.destinationLocation.observe(
+            this,
+            Observer {
+                binding.azimuth = compassActivityViewModel.currentLocation.value?.bearingTo(it)
+                    ?.toPositiveDegrees() ?: 0
+            })
         handlePermissions()
         binding.coordinatesButton.setOnClickListener {
             CoordinatesDialog(compassActivityViewModel).show(
