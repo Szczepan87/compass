@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.example.compass.CompassSensorProvider
 import com.example.compass.LocationProvider
 import com.example.compass.util.DEFAULT_LOCATION
+import com.example.compass.util.toPositiveDegrees
 
 class CompassActivityViewModel(
     private val compassSensorProvider: CompassSensorProvider,
@@ -19,7 +20,7 @@ class CompassActivityViewModel(
         locationProvider.currentLocation.observeForever {
             _currentLocation.postValue(it)
             _currentAzimuth.postValue(
-                it.bearingTo(destinationLocation.value ?: DEFAULT_LOCATION).toInt()
+                it.bearingTo(destinationLocation.value ?: DEFAULT_LOCATION).toPositiveDegrees()
             )
         }
         compassSensorProvider.currentHeading.observeForever { _currentHeading.postValue(it) }

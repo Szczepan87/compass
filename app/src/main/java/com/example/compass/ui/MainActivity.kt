@@ -39,6 +39,12 @@ class MainActivity : AppCompatActivity() {
         compassActivityViewModel.currentHeading.observe(this, Observer { binding.heading = it })
         compassActivityViewModel.currentAzimuth.observe(this, Observer { binding.azimuth = it })
         handlePermissions()
+        binding.coordinatesButton.setOnClickListener {
+            CoordinatesDialog(compassActivityViewModel).show(
+                supportFragmentManager,
+                "LongLat Dialog"
+            )
+        }
     }
 
     private fun handlePermissions() {

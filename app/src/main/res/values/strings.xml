@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Compass</string>
+    <string name="coordinates_button_text">Enter coordinates</string>
+    <string name="coordinate_dialog_title_text">Enter destination coordinates</string>
+    <string name="longitude_hint_text">Longitude</string>
+    <string name="latitude_hint_text">Latitude</string>
 </resources>
