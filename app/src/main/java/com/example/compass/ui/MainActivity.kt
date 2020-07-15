@@ -1,7 +1,6 @@
-package com.example.compass
+package com.example.compass.ui
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Sensor
@@ -14,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import com.example.compass.R
 import com.example.compass.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
@@ -35,7 +35,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this,
+            R.layout.activity_main
+        )
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
@@ -57,7 +59,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 1
             )
         }
-        currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) ?:
+            Location("").apply {
+                longitude = 0.0
+                latitude = 0.0
+            }
         currentLong = currentLocation.longitude
         currentLat = currentLocation.latitude
     }
