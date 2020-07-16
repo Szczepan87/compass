@@ -36,6 +36,7 @@ class CoordinatesDialog(private val compassActivityViewModel: CompassActivityVie
                 latitude = binding.latitudeEditText.text.toString().toDouble()
             }
             compassActivityViewModel.updateDestinationLocation(destination)
+            this.dismiss()
         }
     }
 }

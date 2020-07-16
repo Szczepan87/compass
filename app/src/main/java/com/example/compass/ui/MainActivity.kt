@@ -36,7 +36,9 @@ class MainActivity : AppCompatActivity() {
             R.layout.activity_main
         )
         compassActivityViewModel.updateCurrentLocation()
-        compassActivityViewModel.currentHeading.observe(this, Observer { binding.heading = it })
+        compassActivityViewModel.currentHeading.observe(this, Observer { binding.heading = it
+        binding.northArrow.rotation = it.toFloat().unaryMinus()
+        })
         compassActivityViewModel.currentAzimuth.observe(this, Observer { binding.azimuth = it })
         compassActivityViewModel.destinationLocation.observe(
             this,
