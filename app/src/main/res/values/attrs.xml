@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CompassView">
+        <attr name="heading" format="integer"/>
+        <attr name="azimuth" format="integer"/>
+    </declare-styleable>
+</resources>

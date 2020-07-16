@@ -40,19 +40,14 @@ class MainActivity : AppCompatActivity() {
         binding.viewModel = compassActivityViewModel
         compassActivityViewModel.updateCurrentLocation()
 
-        compassActivityViewModel.currentHeading.observe(this, Observer {
-            binding.compassRose.rotation = it.toFloat().unaryMinus()
-        })
-        compassActivityViewModel.currentAzimuth.observe(this, Observer {
-            binding.azimuthArrow.rotation = it.toFloat()
-        })
         compassActivityViewModel.destinationLocation.observe(
             this,
             Observer {
                 compassActivityViewModel.updateCurrentLocation()
                 val currentAzimuth = compassActivityViewModel.currentLocation.value?.bearingTo(it)
-                compassActivityViewModel.updateCurrentAzimuth(currentAzimuth?.toPositiveDegrees() ?: 0)
-                binding.azimuthArrow.rotation = currentAzimuth ?: 0f
+                compassActivityViewModel.updateCurrentAzimuth(
+                    currentAzimuth?.toPositiveDegrees() ?: 0
+                )
             })
 
         handlePermissions()
