@@ -40,17 +40,20 @@ class MainActivity : AppCompatActivity() {
         })
         compassActivityViewModel.currentAzimuth.observe(this, Observer {
             binding.azimuth = it
-            binding.azimuthArrow.rotation = it.toFloat() // TODO minus north ?
+            binding.azimuthArrow.rotation = it.toFloat()
         })
         compassActivityViewModel.destinationLocation.observe(
             this,
             Observer {
-                binding.azimuth = compassActivityViewModel.currentLocation.value?.bearingTo(it)
+                val currentAzimuth = compassActivityViewModel.currentLocation.value?.bearingTo(it)
+                binding.azimuth = currentAzimuth
                     ?.toPositiveDegrees() ?: 0
+                binding.azimuthArrow.rotation = currentAzimuth ?: 0f
+                compassActivityViewModel.updateCurrentLocation()
             })
         handlePermissions()
         binding.coordinatesButton.setOnClickListener {
-            CoordinatesDialog(compassActivityViewModel).show(
+            LocationProviderDialog(compassActivityViewModel).show(
                 supportFragmentManager,
                 "LongLat Dialog"
             )

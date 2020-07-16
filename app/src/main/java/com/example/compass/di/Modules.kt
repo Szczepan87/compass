@@ -2,8 +2,8 @@ package com.example.compass.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.compass.CompassSensorProvider
-import com.example.compass.LocationProvider
+import com.example.compass.util.providers.CompassSensorProvider
+import com.example.compass.util.providers.LocationProvider
 import com.example.compass.R
 import com.example.compass.vm.CompassActivityViewModel
 import org.koin.android.ext.koin.androidContext
@@ -11,7 +11,11 @@ import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val sensorsModule = module {
-    single { CompassSensorProvider(androidContext()) }
+    single {
+        CompassSensorProvider(
+            androidContext()
+        )
+    }
     single { LocationProvider(androidContext()) }
 }
 

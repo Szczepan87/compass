@@ -1,4 +1,4 @@
-package com.example.compass
+package com.example.compass.util.providers
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -9,6 +9,7 @@ import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.compass.util.DEFAULT_LOCATION
 import com.example.compass.util.LOCATION_COMPARISON_THRESHOLD
 import kotlin.math.abs
 
@@ -48,10 +49,8 @@ class LocationProvider(context: Context) {
         return if (hasLocationPermission()) {
             locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-        } else Location(LocationManager.GPS_PROVIDER).apply {
-            longitude = 0.0
-            latitude = 0.0
-        }
+                ?: DEFAULT_LOCATION
+        } else DEFAULT_LOCATION
     }
 
     private fun hasLocationPermission(): Boolean = ContextCompat.checkSelfPermission(
