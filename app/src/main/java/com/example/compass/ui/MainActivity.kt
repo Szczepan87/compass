@@ -25,8 +25,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var compassActivityViewModel: CompassActivityViewModel = get()
-    private var longDest = 17.0
-    private var latDest = 52.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,10 +34,14 @@ class MainActivity : AppCompatActivity() {
             R.layout.activity_main
         )
         compassActivityViewModel.updateCurrentLocation()
-        compassActivityViewModel.currentHeading.observe(this, Observer { binding.heading = it
-        binding.northArrow.rotation = it.toFloat().unaryMinus()
+        compassActivityViewModel.currentHeading.observe(this, Observer {
+            binding.heading = it
+            binding.compassRose.rotation = it.toFloat().unaryMinus()
         })
-        compassActivityViewModel.currentAzimuth.observe(this, Observer { binding.azimuth = it })
+        compassActivityViewModel.currentAzimuth.observe(this, Observer {
+            binding.azimuth = it
+            binding.azimuthArrow.rotation = it.toFloat() // TODO minus north ?
+        })
         compassActivityViewModel.destinationLocation.observe(
             this,
             Observer {
