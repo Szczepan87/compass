@@ -50,6 +50,10 @@ class CompassActivityViewModel(
         _destinationLocation.postValue(location)
     }
 
+    fun updateCurrentAzimuth(value: Int) {
+        _currentAzimuth.postValue(value)
+    }
+
     override fun onCleared() {
         compassSensorProvider.unregisterListeners()
         compassSensorProvider.currentHeading.removeObserver(currentHeadingObserver)

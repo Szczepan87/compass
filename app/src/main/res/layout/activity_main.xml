@@ -6,12 +6,8 @@
     <data>
 
         <variable
-            name="heading"
-            type="Integer" />
-
-        <variable
-            name="azimuth"
-            type="Integer" />
+            name="viewModel"
+            type="com.example.compass.vm.CompassActivityViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,7 +21,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/compass_rose"
-            app:layout_constraintBottom_toTopOf="@+id/coordinates_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/north_arrow_imageView" />
@@ -46,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="@{heading.toString()}"
+            android:text="@{viewModel.currentHeading.toString()}"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -57,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="@{azimuth.toString()}"
+            android:text="@{viewModel.currentAzimuth.toString()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/heading_textView" />
@@ -81,7 +76,8 @@
             android:text="@string/coordinates_button_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/compass_rose" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -16,9 +16,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.example.compass.R
 import com.example.compass.databinding.ActivityMainBinding
+import com.example.compass.util.COORDINATES_DIALOG_TAG
+import com.example.compass.util.REQUEST_PERMISSION_CODE
 import com.example.compass.util.to360Degrees
 import com.example.compass.util.toPositiveDegrees
 import com.example.compass.vm.CompassActivityViewModel
+import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.get
 
 class MainActivity : AppCompatActivity() {
@@ -33,29 +36,31 @@ class MainActivity : AppCompatActivity() {
             this,
             R.layout.activity_main
         )
+        binding.lifecycleOwner = this
+        binding.viewModel = compassActivityViewModel
         compassActivityViewModel.updateCurrentLocation()
+
         compassActivityViewModel.currentHeading.observe(this, Observer {
-            binding.heading = it
             binding.compassRose.rotation = it.toFloat().unaryMinus()
         })
         compassActivityViewModel.currentAzimuth.observe(this, Observer {
-            binding.azimuth = it
             binding.azimuthArrow.rotation = it.toFloat()
         })
         compassActivityViewModel.destinationLocation.observe(
             this,
             Observer {
-                val currentAzimuth = compassActivityViewModel.currentLocation.value?.bearingTo(it)
-                binding.azimuth = currentAzimuth
-                    ?.toPositiveDegrees() ?: 0
-                binding.azimuthArrow.rotation = currentAzimuth ?: 0f
                 compassActivityViewModel.updateCurrentLocation()
+                val currentAzimuth = compassActivityViewModel.currentLocation.value?.bearingTo(it)
+                compassActivityViewModel.updateCurrentAzimuth(currentAzimuth?.toPositiveDegrees() ?: 0)
+                binding.azimuthArrow.rotation = currentAzimuth ?: 0f
             })
+
         handlePermissions()
+
         binding.coordinatesButton.setOnClickListener {
             LocationProviderDialog(compassActivityViewModel).show(
                 supportFragmentManager,
-                "LongLat Dialog"
+                COORDINATES_DIALOG_TAG
             )
         }
     }
@@ -75,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ),
-                1
+                REQUEST_PERMISSION_CODE
             )
         }
     }
