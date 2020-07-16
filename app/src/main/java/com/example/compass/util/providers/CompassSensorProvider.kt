@@ -36,11 +36,15 @@ class CompassSensorProvider(context: Context) : SensorEventListener {
     private fun lowPass(input: FloatArray, output: FloatArray?): FloatArray {
         if (output == null) return input
 
-        for (i in 0 until input.size) {
+        for (i in input.indices) {
             output[i] = output[i] + ALPHA * (input[i].minus(output[i]))
         }
 
         return output
+    }
+
+    fun unregisterListeners() {
+        sensorManager.unregisterListener(this)
     }
 
     override fun onSensorChanged(event: SensorEvent) {

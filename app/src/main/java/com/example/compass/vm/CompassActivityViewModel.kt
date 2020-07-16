@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.example.compass.util.providers.CompassSensorProvider
 import com.example.compass.util.providers.LocationProvider
@@ -14,15 +15,11 @@ class CompassActivityViewModel(
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
-    init {
-        locationProvider.currentLocation.observeForever {
-            _currentLocation.postValue(it)
-//            _currentAzimuth.postValue(
-//                it.bearingTo(destinationLocation.value ?: DEFAULT_LOCATION).toPositiveDegrees()
-//            )
-        }
-        compassSensorProvider.currentHeading.observeForever { _currentHeading.postValue(it) }
+    private val currentLocationObserver = Observer<Location> {
+        _currentLocation.postValue(it)
     }
+
+    private val currentHeadingObserver = Observer<Int> { _currentHeading.postValue(it) }
 
     private val _currentLocation = MutableLiveData<Location>()
     val currentLocation: LiveData<Location>
@@ -40,11 +37,23 @@ class CompassActivityViewModel(
     val currentAzimuth: LiveData<Int>
         get() = _currentAzimuth
 
+    init {
+        locationProvider.currentLocation.observeForever(currentLocationObserver)
+        compassSensorProvider.currentHeading.observeForever(currentHeadingObserver)
+    }
+
     fun updateCurrentLocation() {
         if (locationProvider.hasLocationChanged()) locationProvider.updateCurrentLocation()
     }
 
     fun updateDestinationLocation(location: Location) {
         _destinationLocation.postValue(location)
+    }
+
+    override fun onCleared() {
+        compassSensorProvider.unregisterListeners()
+        compassSensorProvider.currentHeading.removeObserver(currentHeadingObserver)
+        locationProvider.currentLocation.removeObserver(currentLocationObserver)
+        super.onCleared()
     }
 }
