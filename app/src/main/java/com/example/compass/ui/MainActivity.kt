@@ -38,19 +38,31 @@ class MainActivity : AppCompatActivity() {
         )
         binding.lifecycleOwner = this
         binding.viewModel = compassActivityViewModel
+
+        handlePermissions()
+
         compassActivityViewModel.updateCurrentLocation()
 
         compassActivityViewModel.destinationLocation.observe(
             this,
             Observer {
                 compassActivityViewModel.updateCurrentLocation()
-                val currentAzimuth = compassActivityViewModel.currentLocation.value?.bearingTo(it)
+                val currentAzimuth: Float? =
+                    compassActivityViewModel.currentLocation.value?.bearingTo(it)
                 compassActivityViewModel.updateCurrentAzimuth(
-                    currentAzimuth?.toPositiveDegrees() ?: 0
+                    currentAzimuth?.toPositiveDegrees()
                 )
             })
 
-        handlePermissions()
+        compassActivityViewModel.currentLocation.observe(this, Observer {
+            val destinationLocation: Location? = compassActivityViewModel.destinationLocation.value
+            if (destinationLocation == null) {
+                compassActivityViewModel.updateCurrentAzimuth(null)
+            } else {
+                val currentAzimuth: Float? = it?.bearingTo(destinationLocation)
+                compassActivityViewModel.updateCurrentAzimuth(currentAzimuth?.toPositiveDegrees())
+            }
+        })
 
         binding.coordinatesButton.setOnClickListener {
             LocationProviderDialog(compassActivityViewModel).show(

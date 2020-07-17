@@ -19,8 +19,8 @@ class LocationProvider(context: Context) {
     private val locationManager: LocationManager =
         appContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-    private val _currentLocation = MutableLiveData<Location>()
-    val currentLocation: LiveData<Location>
+    private val _currentLocation = MutableLiveData<Location?>()
+    val currentLocation: LiveData<Location?>
         get() = _currentLocation
 
     fun updateCurrentLocation() {
@@ -31,26 +31,27 @@ class LocationProvider(context: Context) {
         val lastLocation = currentLocation.value
         val mostRecentLocation = getLastKnownLocation()
 
-        return (abs(
-            mostRecentLocation.latitude.minus(
+        return if (lastLocation == null || mostRecentLocation == null){
+            true
+        } else return (abs(
+            mostRecentLocation?.latitude?.minus(
                 lastLocation?.latitude ?: 0.0
-            )
+            ) ?: 0.0
         ) > LOCATION_COMPARISON_THRESHOLD
                 && abs(
-            mostRecentLocation.longitude.minus(
+            mostRecentLocation?.longitude?.minus(
                 lastLocation?.longitude ?: 0.0
-            )
+            ) ?: 0.0
         ) > LOCATION_COMPARISON_THRESHOLD
                 )
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLastKnownLocation(): Location {
+    private fun getLastKnownLocation(): Location? {
         return if (hasLocationPermission()) {
             locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                ?: DEFAULT_LOCATION
-        } else DEFAULT_LOCATION
+        } else null
     }
 
     private fun hasLocationPermission(): Boolean = ContextCompat.checkSelfPermission(

@@ -15,26 +15,26 @@ class CompassActivityViewModel(
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
-    private val currentLocationObserver = Observer<Location> {
+    private val currentLocationObserver = Observer<Location?> {
         _currentLocation.postValue(it)
     }
 
     private val currentHeadingObserver = Observer<Int> { _currentHeading.postValue(it) }
 
-    private val _currentLocation = MutableLiveData<Location>()
-    val currentLocation: LiveData<Location>
+    private val _currentLocation = MutableLiveData<Location?>()
+    val currentLocation: LiveData<Location?>
         get() = _currentLocation
 
-    private val _destinationLocation = MutableLiveData<Location>()
-    val destinationLocation: LiveData<Location>
+    private val _destinationLocation = MutableLiveData<Location?>()
+    val destinationLocation: LiveData<Location?>
         get() = _destinationLocation
 
     private val _currentHeading = MutableLiveData<Int>()
     val currentHeading: LiveData<Int>
         get() = _currentHeading
 
-    private val _currentAzimuth = MutableLiveData<Int>()
-    val currentAzimuth: LiveData<Int>
+    private val _currentAzimuth = MutableLiveData<Int?>()
+    val currentAzimuth: LiveData<Int?>
         get() = _currentAzimuth
 
     init {
@@ -43,14 +43,16 @@ class CompassActivityViewModel(
     }
 
     fun updateCurrentLocation() {
-        if (locationProvider.hasLocationChanged()) locationProvider.updateCurrentLocation()
+//        if (locationProvider.hasLocationChanged())
+            locationProvider.updateCurrentLocation()
     }
 
     fun updateDestinationLocation(location: Location) {
+        locationProvider.updateCurrentLocation()
         _destinationLocation.postValue(location)
     }
 
-    fun updateCurrentAzimuth(value: Int) {
+    fun updateCurrentAzimuth(value: Int?) {
         _currentAzimuth.postValue(value)
     }
 

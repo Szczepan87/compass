@@ -29,9 +29,15 @@ class CompassView(context: Context, attrs: AttributeSet) :
         invalidate()
     }
 
-    fun setAzimuth(azimuth: Int) {
-        this.azimuth = azimuth
-        azimuth_arrow.rotation = azimuth.toFloat()
-        invalidate()
+    fun setAzimuth(azimuth: Int?) {
+        if (azimuth == null) {
+            azimuth_arrow.visibility = View.INVISIBLE
+            return
+        } else {
+            this.azimuth = azimuth
+            azimuth_arrow.visibility = View.VISIBLE
+            azimuth_arrow.rotation = azimuth.toFloat()
+            invalidate()
+        }
     }
 }
