@@ -54,7 +54,7 @@ class CompassActivityViewModel(
         locationProvider.updateCurrentLocation()
     }
 
-    fun updateDestinationLocation(location: Location) {
+    fun updateDestinationLocation(location: Location?) {
         locationProvider.updateCurrentLocation()
         _destinationLocation.postValue(location)
         destinationLocation.value?.let {
