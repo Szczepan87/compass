@@ -1,6 +1,6 @@
 package com.example.compass.util
 
-const val ALPHA = 0.15f
+const val ALPHA = 0.25f
 const val COORDINATES_DIALOG_TAG = "LongLat Dialog"
 const val REQUEST_PERMISSION_CODE = 1
 const val LONGITUDE_KEY = "longitude"

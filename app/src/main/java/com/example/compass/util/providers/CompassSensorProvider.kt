@@ -65,7 +65,6 @@ class CompassSensorProvider(context: Context) : SensorEventListener {
             SensorManager.getOrientation(R, orientation)
             _currentHeading.postValue(orientation[0].to360Degrees())
         }
-
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
