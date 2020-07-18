@@ -48,20 +48,22 @@ public class LocationProviderDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 Location location = new Location(APP_LOCATION_PROVIDER);
-                double latitude = 0.0;
-                double longitude = 0.0;
+                Double latitude = null;
+                Double longitude = null;
                 try {
                     latitude = Double.parseDouble(Objects.requireNonNull(binding.latitudeEditText.getText()).toString());
                     longitude = Double.parseDouble(Objects.requireNonNull(binding.longitudeEditText.getText()).toString());
                 } catch (NumberFormatException e) {
-                    compassActivityViewModel.updateDestinationLocation(null);
+                    compassActivityViewModel.updateCurrentAzimuth(null);
                     dismiss();
                 } finally {
                     dismiss();
                 }
-                location.setLatitude(latitude);
-                location.setLongitude(longitude);
-                compassActivityViewModel.updateDestinationLocation(location);
+                if (latitude != null && longitude != null) {
+                    location.setLatitude(latitude);
+                    location.setLongitude(longitude);
+                    compassActivityViewModel.updateDestinationLocation(location);
+                }
                 dismiss();
             }
         });
