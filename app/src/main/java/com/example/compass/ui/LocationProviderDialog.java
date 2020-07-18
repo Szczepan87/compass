@@ -5,18 +5,14 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
-
 import com.example.compass.R;
 import com.example.compass.databinding.DialogCoordinatesBinding;
-import com.example.compass.util.providers.LocationProvider;
 import com.example.compass.vm.CompassActivityViewModel;
-
 import java.util.Objects;
 
 public class LocationProviderDialog extends DialogFragment {
@@ -36,6 +32,7 @@ public class LocationProviderDialog extends DialogFragment {
     }
 
     private void setUpBinding(final DialogCoordinatesBinding binding) {
+        setEditTextFieldsFromViewModel(binding);
         binding.coordinateDialogCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,5 +51,14 @@ public class LocationProviderDialog extends DialogFragment {
                 dismiss();
             }
         });
+    }
+
+    private void setEditTextFieldsFromViewModel(DialogCoordinatesBinding binding) {
+        if (compassActivityViewModel.getDestinationLocation().getValue() != null) {
+            String longitude = String.valueOf(compassActivityViewModel.getDestinationLocation().getValue().getLongitude());
+            String latitude = String.valueOf(compassActivityViewModel.getDestinationLocation().getValue().getLatitude());
+            binding.longitudeEditText.setText(longitude);
+            binding.latitudeEditText.setText(latitude);
+        }
     }
 }

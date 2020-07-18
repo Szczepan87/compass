@@ -27,25 +27,6 @@ class LocationProvider(context: Context) {
         _currentLocation.postValue(getLastKnownLocation())
     }
 
-    fun hasLocationChanged(): Boolean {
-        val lastLocation = currentLocation.value
-        val mostRecentLocation = getLastKnownLocation()
-
-        return if (lastLocation == null || mostRecentLocation == null){
-            true
-        } else return (abs(
-            mostRecentLocation?.latitude?.minus(
-                lastLocation?.latitude ?: 0.0
-            ) ?: 0.0
-        ) > LOCATION_COMPARISON_THRESHOLD
-                && abs(
-            mostRecentLocation?.longitude?.minus(
-                lastLocation?.longitude ?: 0.0
-            ) ?: 0.0
-        ) > LOCATION_COMPARISON_THRESHOLD
-                )
-    }
-
     @SuppressLint("MissingPermission")
     private fun getLastKnownLocation(): Location? {
         return if (hasLocationPermission()) {

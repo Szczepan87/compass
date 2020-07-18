@@ -25,7 +25,14 @@ class CompassActivityViewModel(
     val currentLocation: LiveData<Location?>
         get() = _currentLocation
 
-    private val _destinationLocation = MutableLiveData<Location?>()
+    private val _destinationLocation = MutableLiveData<Location?>().apply {
+        val savedLocation = getSavedLocation()
+        if (savedLocation.latitude != 0.0 && savedLocation.longitude != 0.0) {
+            postValue(savedLocation)
+        } else {
+            postValue(null)
+        }
+    }
     val destinationLocation: LiveData<Location?>
         get() = _destinationLocation
 
@@ -43,17 +50,31 @@ class CompassActivityViewModel(
     }
 
     fun updateCurrentLocation() {
-//        if (locationProvider.hasLocationChanged())
-            locationProvider.updateCurrentLocation()
+        locationProvider.updateCurrentLocation()
     }
 
     fun updateDestinationLocation(location: Location) {
         locationProvider.updateCurrentLocation()
         _destinationLocation.postValue(location)
+        destinationLocation.value?.let {
+            saveLongLat(it.longitude, it.latitude)
+        }
     }
 
     fun updateCurrentAzimuth(value: Int?) {
         _currentAzimuth.postValue(value)
+    }
+
+    private fun saveLongLat(longitude: Double, latitude: Double) {
+        sharedPreferences.edit().putFloat("longitude", longitude.toFloat()).apply()
+        sharedPreferences.edit().putFloat("latitude", latitude.toFloat()).apply()
+    }
+
+    private fun getSavedLocation(): Location {
+        return Location("").apply {
+            longitude = sharedPreferences.getFloat("longitude", 0f).toDouble()
+            latitude = sharedPreferences.getFloat("latitude", 0f).toDouble()
+        }
     }
 
     override fun onCleared() {
