@@ -5,15 +5,20 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
+
 import com.example.compass.R;
 import com.example.compass.databinding.DialogCoordinatesBinding;
 import com.example.compass.vm.CompassActivityViewModel;
+
 import java.util.Objects;
+
+import static com.example.compass.util.ConstsKt.APP_LOCATION_PROVIDER;
 
 public class LocationProviderDialog extends DialogFragment {
     private CompassActivityViewModel compassActivityViewModel;
@@ -42,7 +47,7 @@ public class LocationProviderDialog extends DialogFragment {
         binding.coordinateDialogOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Location location = new Location("");
+                Location location = new Location(APP_LOCATION_PROVIDER);
                 double latitude = Double.parseDouble(Objects.requireNonNull(binding.latitudeEditText.getText()).toString());
                 double longitude = Double.parseDouble(Objects.requireNonNull(binding.longitudeEditText.getText()).toString());
                 location.setLatitude(latitude);

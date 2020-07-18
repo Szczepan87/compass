@@ -9,9 +9,6 @@ import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.compass.util.DEFAULT_LOCATION
-import com.example.compass.util.LOCATION_COMPARISON_THRESHOLD
-import kotlin.math.abs
 
 class LocationProvider(context: Context) {
 

@@ -5,19 +5,21 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.compass.R
+import com.example.compass.util.AZIMUTH_DEFAULT_VALUE
+import com.example.compass.util.HEADING_DEFAULT_VALUE
 import kotlinx.android.synthetic.main.compass_view.view.*
 
 class CompassView(context: Context, attrs: AttributeSet) :
     ConstraintLayout(context, attrs) {
 
-    private var heading = 0
-    private var azimuth = 0
+    private var heading = HEADING_DEFAULT_VALUE
+    private var azimuth = AZIMUTH_DEFAULT_VALUE
 
     init {
         View.inflate(context, R.layout.compass_view, this)
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.CompassView)
-        heading = attributes.getInt(R.styleable.CompassView_heading, 0)
-        azimuth = attributes.getInt(R.styleable.CompassView_azimuth, 0)
+        heading = attributes.getInt(R.styleable.CompassView_heading, HEADING_DEFAULT_VALUE)
+        azimuth = attributes.getInt(R.styleable.CompassView_azimuth, AZIMUTH_DEFAULT_VALUE)
         compass_rose.rotation = heading.toFloat()
         azimuth_arrow.rotation = azimuth.toFloat()
         attributes.recycle()

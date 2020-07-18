@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.example.compass.util.*
 import com.example.compass.util.providers.CompassSensorProvider
 import com.example.compass.util.providers.LocationProvider
 
@@ -27,7 +28,7 @@ class CompassActivityViewModel(
 
     private val _destinationLocation = MutableLiveData<Location?>().apply {
         val savedLocation = getSavedLocation()
-        if (savedLocation.latitude != 0.0 && savedLocation.longitude != 0.0) {
+        if (savedLocation.latitude != LATITUDE_DEFAULT_DOUBLE && savedLocation.longitude != LONGITUDE_DEFAULT_DOUBLE) {
             postValue(savedLocation)
         } else {
             postValue(null)
@@ -66,14 +67,15 @@ class CompassActivityViewModel(
     }
 
     private fun saveLongLat(longitude: Double, latitude: Double) {
-        sharedPreferences.edit().putFloat("longitude", longitude.toFloat()).apply()
-        sharedPreferences.edit().putFloat("latitude", latitude.toFloat()).apply()
+        sharedPreferences.edit().putFloat(LONGITUDE_KEY, longitude.toFloat()).apply()
+        sharedPreferences.edit().putFloat(LATITUDE_KEY, latitude.toFloat()).apply()
     }
 
     private fun getSavedLocation(): Location {
-        return Location("").apply {
-            longitude = sharedPreferences.getFloat("longitude", 0f).toDouble()
-            latitude = sharedPreferences.getFloat("latitude", 0f).toDouble()
+        return Location(APP_LOCATION_PROVIDER).apply {
+            longitude =
+                sharedPreferences.getFloat(LONGITUDE_KEY, LONGITUDE_DEFAULT_FLOAT).toDouble()
+            latitude = sharedPreferences.getFloat(LATITUDE_KEY, LATITUDE_DEFAULT_FLOAT).toDouble()
         }
     }
 

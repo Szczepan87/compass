@@ -1,16 +1,10 @@
 package com.example.compass.ui
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.location.Location
-import android.location.LocationManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -18,16 +12,31 @@ import com.example.compass.R
 import com.example.compass.databinding.ActivityMainBinding
 import com.example.compass.util.COORDINATES_DIALOG_TAG
 import com.example.compass.util.REQUEST_PERMISSION_CODE
-import com.example.compass.util.to360Degrees
 import com.example.compass.util.toPositiveDegrees
 import com.example.compass.vm.CompassActivityViewModel
-import org.koin.android.ext.android.bind
 import org.koin.android.ext.android.get
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var compassActivityViewModel: CompassActivityViewModel = get()
+    private val destinationLocationObserver = Observer<Location?> {
+        compassActivityViewModel.updateCurrentLocation()
+        val currentAzimuth: Float? =
+            compassActivityViewModel.currentLocation.value?.bearingTo(it)
+        compassActivityViewModel.updateCurrentAzimuth(
+            currentAzimuth?.toPositiveDegrees()
+        )
+    }
+    private val currentLocationObserver = Observer<Location?> {
+        val destinationLocation: Location? = compassActivityViewModel.destinationLocation.value
+        if (destinationLocation == null) {
+            compassActivityViewModel.updateCurrentAzimuth(null)
+        } else {
+            val currentAzimuth: Float? = it?.bearingTo(destinationLocation)
+            compassActivityViewModel.updateCurrentAzimuth(currentAzimuth?.toPositiveDegrees())
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,26 +52,9 @@ class MainActivity : AppCompatActivity() {
 
         compassActivityViewModel.updateCurrentLocation()
 
-        compassActivityViewModel.destinationLocation.observe(
-            this,
-            Observer {
-                compassActivityViewModel.updateCurrentLocation()
-                val currentAzimuth: Float? =
-                    compassActivityViewModel.currentLocation.value?.bearingTo(it)
-                compassActivityViewModel.updateCurrentAzimuth(
-                    currentAzimuth?.toPositiveDegrees()
-                )
-            })
+        compassActivityViewModel.destinationLocation.observe(this, destinationLocationObserver)
 
-        compassActivityViewModel.currentLocation.observe(this, Observer {
-            val destinationLocation: Location? = compassActivityViewModel.destinationLocation.value
-            if (destinationLocation == null) {
-                compassActivityViewModel.updateCurrentAzimuth(null)
-            } else {
-                val currentAzimuth: Float? = it?.bearingTo(destinationLocation)
-                compassActivityViewModel.updateCurrentAzimuth(currentAzimuth?.toPositiveDegrees())
-            }
-        })
+        compassActivityViewModel.currentLocation.observe(this, currentLocationObserver)
 
         binding.coordinatesButton.setOnClickListener {
             LocationProviderDialog(compassActivityViewModel).show(
